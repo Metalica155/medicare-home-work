@@ -1,0 +1,174 @@
+openapi: 3.0.3
+
+info:
+  title: Doctors API
+  description: REST API for managing doctors.
+  version: 1.0.0
+
+servers:
+- url: http://localhost:8000/api
+  description: Local Development
+
+paths:
+  /ping:
+    get:
+      tags:
+        - ping
+      summary: Basic health check
+      operationId: ping
+      responses:
+        '200':
+          description: Pong
+          content: 
+            application/json:
+             schema: 
+              $ref: "#/components/schemas/Pong"
+
+
+  /doctors:
+    get:
+      tags:
+        - Doctors
+      summary: List doctors
+      operationId: listDoctors
+      responses:
+        '200':
+          description: Doctors retrieved successfully
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/DoctorCollection'
+
+    post:
+      tags:
+        - Doctors
+      summary: Create doctor
+      operationId: createDoctor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDoctorRequest'
+      responses:
+        '201':
+          description: Doctor created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Doctor'
+
+        '400':
+          $ref: '#/components/responses/ValidationError'
+
+  /doctors/{id}:
+    get:
+      tags:
+        - Doctors
+      summary: Get doctor by ID
+      operationId: getDoctor
+      parameters:
+        - $ref: '#/components/parameters/DoctorId'
+      responses:
+        '200':
+          description: Doctor retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Doctor'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  parameters:
+    DoctorId:
+      name: id
+      in: path
+      required: true
+      description: Doctor ID
+      schema:
+        type: integer
+        example: 1
+
+  schemas:
+    Pong:
+      type: string
+      example: pong
+    Doctor:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+        expertise:
+          $ref: '#/components/schemas/Expertise'
+
+    DoctorCollection:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Doctor'
+
+    Expertise:
+      type: string
+      enum:
+        - Cardiologist
+        - Dermatoloist
+        - Neurologist
+        - General Practitioner
+
+    CreateDoctorRequest:
+      type: object
+      required:
+        - name
+        - email
+        - expertise
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        expertise:
+          $ref: '#/components/schemas/Expertise'
+
+    UpdateDoctorRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        expertise:
+          $ref: '#/components/schemas/Expertise'
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+
+  responses:
+    ValidationError:
+      description: Validation failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

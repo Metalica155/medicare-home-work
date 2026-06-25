@@ -1,0 +1,16 @@
+@baseUrl = http://localhost:8000
+
+
+### Ping
+GET {{baseUrl}}/api/ping
+
+### Get Doctor
+GET {{baseUrl}}/api/doctors/1
+
+### Post Doctor
+POST {{baseUrl}}/api/doctors
+Content-Type: application/json
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
