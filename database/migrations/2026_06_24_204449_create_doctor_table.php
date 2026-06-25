@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            // TODO foreign key
             $table->string('expertise');
             $table->timestamps();
         });

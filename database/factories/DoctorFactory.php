@@ -20,7 +20,14 @@ class DoctorFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'expertise' => fake()->randomElement(['General practitioner', 'dermatologist']),
+            'expertise' => fake()->randomElement(
+                [
+                    'General Practitioner', 
+                    'Dermatologist',
+                    'Cardiologist',
+                    'Neurologist',
+                ]
+            ),
         ];
     }
 }
