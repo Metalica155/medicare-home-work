@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Actions;
+namespace App\Http\Actions\Doctors;
 
+use App\Http\Actions\Action;
 use App\Models\Doctor;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

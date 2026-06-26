@@ -77,7 +77,7 @@ paths:
       summary: Get doctor by ID
       operationId: getDoctor
       parameters:
-        - $ref: "#/components/parameters/DoctorId"
+        - $ref: "#/components/parameters/Id"
       responses:
         "200":
           description: Doctor retrieved successfully
@@ -94,7 +94,7 @@ paths:
       summary: Patch doctor by ID
       operationId: patchDoctor
       parameters:
-        - $ref: "#/components/parameters/DoctorId"
+        - $ref: "#/components/parameters/Id"
       requestBody:
         required: true
         content:
@@ -115,20 +115,118 @@ paths:
       summary: Delete doctor by ID
       operationId: deleteDoctor
       parameters:
-        - $ref: "#/components/parameters/DoctorId"
+        - $ref: "#/components/parameters/Id"
       responses:
         "204":
           description: Doctor deleted successfully
         "404":
           $ref: "#/components/responses/NotFound"
 
+  /patients:
+    get:
+      tags:
+        - Patients
+      summary: List Patients
+      operationId: listPatients
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          required: true
+          description: page number
+          example: 1
+
+      responses:
+        "200":
+          description: Patients retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PatientCollection"
+
+    post:
+      tags:
+        - Patients
+      summary: Create patient
+      operationId: createPatient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePatientRequest"
+      responses:
+        "201":
+          description: Patient created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Patient"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+
+  /patients/{id}:
+    get:
+      tags:
+        - Patients
+      summary: Get patient by ID
+      operationId: getPatient
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Patient retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Patient"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    patch:
+      tags:
+        - Patients
+      summary: Patch patient by ID
+      operationId: patchPatient
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePatientRequest"
+      responses:
+        "204":
+          description: Patient updated successfully
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
+
+    delete:
+      tags:
+        - Patients
+      summary: Delete patient by ID
+      operationId: deletePatient
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Patient deleted successfully
+        "404":
+          $ref: "#/components/responses/NotFound"
+
 components:
   parameters:
-    DoctorId:
+    Id:
       name: id
       in: path
       required: true
-      description: Doctor ID
+      description: ID
       schema:
         type: integer
         example: 1
@@ -137,6 +235,7 @@ components:
     Pong:
       type: string
       example: pong
+
     Doctor:
       type: object
       properties:
@@ -153,6 +252,22 @@ components:
         expertise:
           $ref: "#/components/schemas/Expertise"
 
+    Patient:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+        phone_number:
+          $ref: "#/components/schemas/PhoneNumber"
+
     DoctorCollection:
       type: object
       required:
@@ -164,6 +279,22 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Doctor"
+        links:
+          $ref: "#/components/schemas/PaginationLinks"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    PatientCollection:
+      type: object
+      required:
+        - data
+        - links
+        - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Patient"
         links:
           $ref: "#/components/schemas/PaginationLinks"
         meta:
@@ -245,6 +376,11 @@ components:
         - Neurologist
         - General Practitioner
 
+    PhoneNumber:
+      type: string
+      format: phone number
+      example: +36706666666
+
     CreateDoctorRequest:
       type: object
       required:
@@ -260,6 +396,21 @@ components:
         expertise:
           $ref: "#/components/schemas/Expertise"
 
+    CreatePatientRequest:
+      type: object
+      required:
+        - name
+        - email
+        - phone_number
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone_number:
+          $ref: "#/components/schemas/PhoneNumber"
+
     UpdateDoctorRequest:
       type: object
       properties:
@@ -270,6 +421,17 @@ components:
           format: email
         expertise:
           $ref: "#/components/schemas/Expertise"
+
+    UpdatePatientRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone_number:
+          $ref: "#/components/schemas/PhoneNumber"
 
     Error:
       type: object

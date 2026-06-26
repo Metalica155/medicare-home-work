@@ -2,12 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Expertise;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class UpdateDoctorRequest extends FormRequest
+class StorePatientRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,14 +23,9 @@ class UpdateDoctorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'      => ['sometimes', 'string', 'max:255'],
-            'email'     => [
-                'sometimes',
-                'email:rfc',
-                'max:255',
-                Rule::unique('doctors')->ignore($this->route('doctor')),
-            ],
-            'expertise' => ['sometimes', Rule::enum(Expertise::class)]
+            'name'         => ['required', 'string', 'max:255'],
+            'email'        => ['required', 'email:rfc', 'max:255', 'unique:patients,email'],
+            'phone_number' => ['required', 'regex:/^\+?[0-9\s\-\(\)]{7,20}$/'],
         ];
     }
 }

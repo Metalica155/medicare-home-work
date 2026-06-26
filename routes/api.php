@@ -1,10 +1,15 @@
 <?php
 
-use App\Http\Actions\CreateDoctorAction;
-use App\Http\Actions\DeleteDoctorAction;
-use App\Http\Actions\GetDoctorAction;
-use App\Http\Actions\GetDoctorsAction;
-use App\Http\Actions\UpdateDoctorAction;
+use App\Http\Actions\Doctors\DeleteDoctorAction;
+use App\Http\Actions\Doctors\GetDoctorAction;
+use App\Http\Actions\Doctors\GetDoctorsAction;
+use App\Http\Actions\Doctors\StoreDoctorAction;
+use App\Http\Actions\Doctors\UpdateDoctorAction;
+use App\Http\Actions\Patients\DeletePatientAction;
+use App\Http\Actions\Patients\GetPatientAction;
+use App\Http\Actions\Patients\GetPatientsAction;
+use App\Http\Actions\Patients\StorePatientAction;
+use App\Http\Actions\Patients\UpdatePatientAction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +21,14 @@ Route::get('/ping', function (Request $request) {
 Route::get('/doctors', GetDoctorsAction::class);
 Route::get('/doctors/{doctor}', GetDoctorAction::class);
 
-Route::post('/doctors', CreateDoctorAction::class);
+Route::post('/doctors', StoreDoctorAction::class);
 Route::patch('/doctors/{doctor}', UpdateDoctorAction::class);
 Route::delete('/doctors/{doctor}', DeleteDoctorAction::class);
+
+// Patient CRUD
+Route::get('/patients', GetPatientsAction::class);
+Route::get('/patients/{patient}', GetPatientAction::class);
+
+Route::post('/patients', StorePatientAction::class);
+Route::patch('/patients/{patient}', UpdatePatientAction::class);
+Route::delete('/patients/{patient}', DeletePatientAction::class);

@@ -78,7 +78,7 @@ class DoctorCrudTest extends TestCase
         $this->getJson('/api/doctors/999')->assertNotFound();
     }
 
-    public function test_creates_a_doctor(): void
+    public function test_store_a_doctor(): void
     {
         $payload = [
             'name'      => 'John Doe',
