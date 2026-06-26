@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 
 class GetDoctorAction extends Action
 {
-    public function __invoke(Request $request, int $id): DoctorResource
+    public function __invoke(Request $request, Doctor $doctor): DoctorResource
     {
-        return new DoctorResource(Doctor::findOrFail($id));
+        return new DoctorResource($doctor);
     }
 }

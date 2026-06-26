@@ -6,8 +6,8 @@ info:
   version: 1.0.0
 
 servers:
-- url: http://localhost:8000/api
-  description: Local Development
+  - url: http://localhost:8000/api
+    description: Local Development
 
 paths:
   /ping:
@@ -17,13 +17,12 @@ paths:
       summary: Basic health check
       operationId: ping
       responses:
-        '200':
+        "200":
           description: Pong
-          content: 
+          content:
             application/json:
-             schema: 
-              $ref: "#/components/schemas/Pong"
-
+              schema:
+                $ref: "#/components/schemas/Pong"
 
   /doctors:
     get:
@@ -31,13 +30,22 @@ paths:
         - Doctors
       summary: List doctors
       operationId: listDoctors
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          required: true
+          description: page number
+          example: 1
+
       responses:
-        '200':
+        "200":
           description: Doctors retrieved successfully
           content:
             application/json:
-              schema: 
-                $ref: '#/components/schemas/DoctorCollection'
+              schema:
+                $ref: "#/components/schemas/DoctorCollection"
 
     post:
       tags:
@@ -49,17 +57,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateDoctorRequest'
+              $ref: "#/components/schemas/CreateDoctorRequest"
       responses:
-        '201':
+        "201":
           description: Doctor created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Doctor'
-
-        '400':
-          $ref: '#/components/responses/ValidationError'
+                $ref: "#/components/schemas/Doctor"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
+        "400":
+          $ref: "#/components/responses/ValidationError"
 
   /doctors/{id}:
     get:
@@ -68,16 +77,50 @@ paths:
       summary: Get doctor by ID
       operationId: getDoctor
       parameters:
-        - $ref: '#/components/parameters/DoctorId'
+        - $ref: "#/components/parameters/DoctorId"
       responses:
-        '200':
+        "200":
           description: Doctor retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Doctor'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: "#/components/schemas/Doctor"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    patch:
+      tags:
+        - Doctors
+      summary: Patch doctor by ID
+      operationId: patchDoctor
+      parameters:
+        - $ref: "#/components/parameters/DoctorId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDoctorRequest"
+      responses:
+        "204":
+          description: Doctor updated successfully
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
+
+    delete:
+      tags:
+        - Doctors
+      summary: Delete doctor by ID
+      operationId: deleteDoctor
+      parameters:
+        - $ref: "#/components/parameters/DoctorId"
+      responses:
+        "204":
+          description: Doctor deleted successfully
+        "404":
+          $ref: "#/components/responses/NotFound"
 
 components:
   parameters:
@@ -108,15 +151,91 @@ components:
           format: email
           example: john.doe@example.com
         expertise:
-          $ref: '#/components/schemas/Expertise'
+          $ref: "#/components/schemas/Expertise"
 
     DoctorCollection:
       type: object
+      required:
+        - data
+        - links
+        - meta
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/Doctor'
+            $ref: "#/components/schemas/Doctor"
+        links:
+          $ref: "#/components/schemas/PaginationLinks"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    PaginationLinks:
+      type: object
+      properties:
+        first:
+          type: string
+          format: uri
+          nullable: true
+        last:
+          type: string
+          format: uri
+          nullable: true
+        prev:
+          type: string
+          format: uri
+          nullable: true
+        next:
+          type: string
+          format: uri
+          nullable: true
+
+    PaginationMeta:
+      type: object
+      properties:
+        current_page:
+          type: integer
+          example: 3
+        from:
+          type: integer
+          nullable: true
+          example: 31
+        last_page:
+          type: integer
+          example: 8
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaginationLink"
+        path:
+          type: string
+          format: uri
+        per_page:
+          type: integer
+          example: 15
+        to:
+          type: integer
+          nullable: true
+          example: 45
+        total:
+          type: integer
+          example: 111
+
+    PaginationLink:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          nullable: true
+        label:
+          type: string
+          example: "1"
+        page:
+          type: integer
+          nullable: true
+          example: 1
+        active:
+          type: boolean
 
     Expertise:
       type: string
@@ -139,7 +258,7 @@ components:
           type: string
           format: email
         expertise:
-          $ref: '#/components/schemas/Expertise'
+          $ref: "#/components/schemas/Expertise"
 
     UpdateDoctorRequest:
       type: object
@@ -150,13 +269,19 @@ components:
           type: string
           format: email
         expertise:
-          $ref: '#/components/schemas/Expertise'
+          $ref: "#/components/schemas/Expertise"
 
     Error:
       type: object
       properties:
         message:
           type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
 
   responses:
     ValidationError:
@@ -164,11 +289,18 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
 
     NotFound:
       description: Resource not found
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
+
+    UnprocessableContent:
+      description: Unprocessable content
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"

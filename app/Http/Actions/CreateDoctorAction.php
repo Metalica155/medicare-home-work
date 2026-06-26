@@ -11,13 +11,7 @@ class CreateDoctorAction extends Action
 {
     public function __invoke(CreateDoctorRequest $request)
     {
-        $doctor = Doctor::create(
-            [
-                'name'      => $request->name,
-                'email'     => $request->email,
-                'expertise' => $request->expertise,
-            ]
-        );
+        $doctor = Doctor::create($request->validated());
 
         return DoctorResource::make($doctor)
             ->response()

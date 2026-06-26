@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class CreateDoctorRequest extends FormRequest
+class UpdateDoctorRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +25,14 @@ class CreateDoctorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'      => ['required', 'string', 'max:255'],
-            'email'     => ['required', 'email:rfc', 'max:255', 'unique:doctors,email'],
-            'expertise' => ['required', Rule::enum(Expertise::class)]
+            'name'      => ['sometimes', 'string', 'max:255'],
+            'email'     => [
+                'sometimes', 
+                'email:rfc', 
+                'max:255', 
+                Rule::unique('doctors')->ignore($this->route('doctor')),
+            ],
+            'expertise' => ['sometimes', Rule::enum(Expertise::class)]
         ];
     }
 }
