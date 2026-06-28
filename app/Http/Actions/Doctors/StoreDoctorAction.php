@@ -6,11 +6,12 @@ use App\Http\Actions\Action;
 use App\Http\Requests\StoreDoctorRequest;
 use App\Http\Resources\DoctorResource;
 use App\Models\Doctor;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 class StoreDoctorAction extends Action
 {
-    public function __invoke(StoreDoctorRequest $request)
+    public function __invoke(StoreDoctorRequest $request): JsonResponse
     {
         $doctor = Doctor::create($request->validated());
 

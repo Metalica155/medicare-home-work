@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ValidAvailabilityDuration;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -12,7 +13,7 @@ class StoreAvailabilityRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +24,14 @@ class StoreAvailabilityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'starts_at'     => ['required', 'date', 'after:now'],
+            'ends_at'       => [
+                'required',
+                'date',
+                'after:starts_at',
+                new ValidAvailabilityDuration(),
+            ],
+            'slot_duration' => ['required', 'integer', 'max:60'],
         ];
     }
 }

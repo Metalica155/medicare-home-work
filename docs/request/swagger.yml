@@ -64,7 +64,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Doctor"
+                $ref: "#/components/schemas/DoctorResponse"
         "422":
           $ref: "#/components/responses/UnprocessableContent"
         "400":
@@ -84,7 +84,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Doctor"
+                $ref: "#/components/schemas/DoctorResponse"
         "404":
           $ref: "#/components/responses/NotFound"
 
@@ -162,7 +162,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Patient"
+                $ref: "#/components/schemas/PatientResponse"
         "422":
           $ref: "#/components/responses/UnprocessableContent"
         "400":
@@ -182,7 +182,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Patient"
+                $ref: "#/components/schemas/PatientResponse"
         "404":
           $ref: "#/components/responses/NotFound"
 
@@ -240,6 +240,34 @@ paths:
                 $ref: "#/components/schemas/AvailabilityCollection"
         "422":
           $ref: "#/components/responses/UnprocessableContent"
+
+  /doctors/{id}/availabilities:
+    post:
+      tags:
+        - Availability
+      summary: Create Availability
+      operationId: createAvailability
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAvalabilityRequest"
+      responses:
+        "201":
+          description: Availability created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AvailabilityResponse"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "409":
+          $ref: "#/components/responses/Conflict"
 
 components:
   parameters:
@@ -458,7 +486,7 @@ components:
         endsAt:
           type: string
           format: date
-          example: 2026-07-02 08:00:0
+          example: 2026-07-02 08:00:00
         slotDuration:
           type: integer
           example: 30
@@ -493,6 +521,25 @@ components:
           format: email
         expertise:
           $ref: "#/components/schemas/Expertise"
+
+    CreateAvalabilityRequest:
+      type: object
+      required:
+        - starts_at
+        - ends_at
+        - slot_duration
+      properties:
+        starts_at:
+          type: string
+          format: date
+          example: 2026-07-02 08:00:00
+        ends_at:
+          type: string
+          format: date
+          example: 2026-07-02 08:00:00
+        slot_duration:
+          type: integer
+          example: 30
 
     CreatePatientRequest:
       type: object
@@ -543,6 +590,36 @@ components:
             items:
               type: string
 
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+
+    DoctorResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: "#/components/schemas/Doctor"
+
+    PatientResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: "#/components/schemas/Patient"
+
+    AvailabilityResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: "#/components/schemas/Availability"
+
   responses:
     ValidationError:
       description: Validation failed
@@ -564,3 +641,10 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Message"

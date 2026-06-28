@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Actions\Availabilities\GetAvailabilitiesAction;
+use App\Http\Actions\Availabilities\StoreAvailabilityAction;
 use App\Http\Actions\Doctors\DeleteDoctorAction;
 use App\Http\Actions\Doctors\GetDoctorAction;
 use App\Http\Actions\Doctors\GetDoctorsAction;
@@ -11,8 +12,6 @@ use App\Http\Actions\Patients\GetPatientAction;
 use App\Http\Actions\Patients\GetPatientsAction;
 use App\Http\Actions\Patients\StorePatientAction;
 use App\Http\Actions\Patients\UpdatePatientAction;
-use App\Http\Resources\AvailabilityResource;
-use App\Models\Availability;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,3 +37,5 @@ Route::delete('/patients/{patient}', DeletePatientAction::class);
 
 // Availability
 Route::get('/availabilities', GetAvailabilitiesAction::class);
+
+Route::post('/doctors/{doctor}/availabilities', StoreAvailabilityAction::class);
