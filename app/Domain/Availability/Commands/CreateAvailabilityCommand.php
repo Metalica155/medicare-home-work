@@ -20,13 +20,4 @@ final readonly class CreateAvailabilityCommand
             slotDuration: $data['slot_duration'],
         );
     }
-
-    public function toArray(): array
-    {
-        return [
-            'starts_at'     => $this->startsAt,
-            'ends_at'       => $this->endsAt,
-            'slot_duration' => $this->slotDuration,
-        ];
-    }
 }

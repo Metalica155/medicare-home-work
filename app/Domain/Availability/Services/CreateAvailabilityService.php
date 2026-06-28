@@ -2,6 +2,7 @@
 
 namespace App\Domain\Availability\Services;
 
+use App\DataSource\Repositories\AvailabilityRepositoryInterface;
 use App\Domain\Availability\Commands\CreateAvailabilityCommand;
 use App\Domain\Availability\Contracts\CreateAvailabilityServiceInterface;
 use App\Domain\Availability\Exceptions\AvailabilityInPastException;
@@ -11,30 +12,33 @@ use App\Models\Doctor;
 
 class CreateAvailabilityService implements CreateAvailabilityServiceInterface
 {
-    public function create(Doctor $doctor, CreateAvailabilityCommand $data): Availability
+    public function __construct(
+        private AvailabilityRepositoryInterface $repository,
+    ) {}
+
+    public function create(Doctor $doctor, CreateAvailabilityCommand $command): Availability
     {
-        $this->ensureStartsInFuture($data);
+        $this->ensureStartsInFuture($command);
 
-        $this->ensureDoesNotOverlap($doctor, $data);
+        $this->ensureDoesNotOverlap($doctor, $command);
 
-        return $doctor->availabilities()->create($data->toArray());
+        return $this->repository->create($doctor, $command);
     }
 
-    private function ensureDoesNotOverlap(Doctor $doctor, CreateAvailabilityCommand $data): void
+    private function ensureDoesNotOverlap(Doctor $doctor, CreateAvailabilityCommand $command): void
     {
-        $overlaps = $doctor->availabilities()
-            ->where('starts_at', '<', $data->endsAt)
-            ->where('ends_at', '>', $data->startsAt)
-            ->exists();
-
-        if ($overlaps === true) {
+        if ($this->repository->overlaps(
+            $doctor,
+            $command->startsAt,
+            $command->endsAt
+        ) === true) {
             throw new AvailabilityOverlapException();
         }
     }
 
-    private function ensureStartsInFuture(CreateAvailabilityCommand $data): void
+    private function ensureStartsInFuture(CreateAvailabilityCommand $command): void
     {
-        if ($data->startsAt->isPast()) {
+        if ($command->startsAt->isPast()) {
             throw new AvailabilityInPastException();
         }
     }

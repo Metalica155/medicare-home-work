@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\DataSource\Eloquent\AvailabilityRepository;
+use App\DataSource\Repositories\AvailabilityRepositoryInterface;
 use App\Domain\Availability\Contracts\CreateAvailabilityServiceInterface;
 use App\Domain\Availability\Services\CreateAvailabilityService;
 use Illuminate\Support\ServiceProvider;
@@ -16,6 +18,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             CreateAvailabilityServiceInterface::class,
             CreateAvailabilityService::class,
+        );
+
+        $this->app->bind(
+            AvailabilityRepositoryInterface::class,
+            AvailabilityRepository::class
         );
     }
 
