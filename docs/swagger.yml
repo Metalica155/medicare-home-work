@@ -10,20 +10,6 @@ servers:
     description: Local Development
 
 paths:
-  /ping:
-    get:
-      tags:
-        - ping
-      summary: Basic health check
-      operationId: ping
-      responses:
-        "200":
-          description: Pong
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Pong"
-
   /doctors:
     get:
       tags:
@@ -317,10 +303,6 @@ components:
         example: 2026-07-01T09:00:00
 
   schemas:
-    Pong:
-      type: string
-      example: pong
-
     Order:
       type: string
       enum:

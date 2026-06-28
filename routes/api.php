@@ -12,12 +12,7 @@ use App\Http\Actions\Patients\GetPatientAction;
 use App\Http\Actions\Patients\GetPatientsAction;
 use App\Http\Actions\Patients\StorePatientAction;
 use App\Http\Actions\Patients\UpdatePatientAction;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/ping', function (Request $request) {
-    return 'pong';
-});
 
 // Doctor CRUD
 Route::get('/doctors', GetDoctorsAction::class);
