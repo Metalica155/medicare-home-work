@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Database\Factories\DoctorFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['name', 'email', 'expertise'])]
 class Doctor extends Model
 {
-     /** @use HasFactory<DoctorFactory> */
+    /** @use HasFactory<DoctorFactory> */
     use HasFactory;
 
     protected function casts(): array
@@ -19,5 +20,10 @@ class Doctor extends Model
         return [
             'expertise' => Expertise::class,
         ];
+    }
+
+    public function availabilities(): HasMany
+    {
+        return $this->hasMany(Availability::class);
     }
 }

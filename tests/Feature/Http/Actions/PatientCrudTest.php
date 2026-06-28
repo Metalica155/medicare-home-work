@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Http\Controllers;
+namespace Tests\Feature\Http\Actions;
 
 use App\Models\Doctor;
 use App\Models\Patient;

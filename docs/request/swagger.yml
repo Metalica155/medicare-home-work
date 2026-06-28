@@ -220,6 +220,27 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
 
+  /availabilities:
+    get:
+      tags:
+        - Availability
+      summary: Get availabilities
+      operationId: getAvailabilities
+      parameters:
+        - $ref: "#/components/parameters/DoctorId"
+        - $ref: "#/components/parameters/From"
+        - $ref: "#/components/parameters/To"
+        - $ref: "#/components/parameters/Order"
+      responses:
+        "200":
+          description: Availabilities retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AvailabilityCollection"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
+
 components:
   parameters:
     Id:
@@ -231,10 +252,54 @@ components:
         type: integer
         example: 1
 
+    DoctorId:
+      name: doctor_id
+      in: query
+      required: false
+      description: Doctor ID
+      schema:
+        type: integer
+        example: 1
+
+    Order:
+      name: order
+      in: query
+      required: false
+      description: Order of the result set
+      $ref: "#/components/schemas/Order"
+
+    From:
+      name: from
+      in: query
+      required: false
+      description: from
+      schema:
+        type: string
+        format: date
+        example: 2026-07-01T09:00:00
+
+    To:
+      name: to
+      in: query
+      required: false
+      description: to
+      schema:
+        type: string
+        format: date
+        example: 2026-07-01T09:00:00
+
   schemas:
     Pong:
       type: string
       example: pong
+
+    Order:
+      type: string
+      enum:
+        - asc
+        - desc
+      default: desc
+      example: desc
 
     Doctor:
       type: object
@@ -380,6 +445,39 @@ components:
       type: string
       format: phone number
       example: +36706666666
+
+    Availability:
+      type: object
+      properties:
+        doctor:
+          $ref: "#/components/schemas/Doctor"
+        startsAt:
+          type: string
+          format: date
+          example: 2026-07-02 08:00:00
+        endsAt:
+          type: string
+          format: date
+          example: 2026-07-02 08:00:0
+        slotDuration:
+          type: integer
+          example: 30
+
+    AvailabilityCollection:
+      type: object
+      required:
+        - data
+        - links
+        - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Availability"
+        links:
+          $ref: "#/components/schemas/PaginationLinks"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
 
     CreateDoctorRequest:
       type: object
