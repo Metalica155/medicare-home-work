@@ -3,9 +3,11 @@
 namespace App\DataSource\Repositories;
 
 use App\Domain\Availability\Commands\CreateAvailabilityCommand;
+use App\Domain\Availability\Queries\ListAvailableSlotsQuery;
 use App\Models\Availability;
 use App\Models\Doctor;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Collection;
 
 interface AvailabilityRepositoryInterface
 {
@@ -19,4 +21,11 @@ interface AvailabilityRepositoryInterface
         CarbonImmutable $startsAt,
         CarbonImmutable $endsAt
     ): bool;
+
+    /**
+     * @return Collection<int, Availability>
+     */
+    public function listAvailabilities(
+        ListAvailableSlotsQuery $query,
+    ): Collection;
 }

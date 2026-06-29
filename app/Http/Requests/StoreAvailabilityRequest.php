@@ -31,7 +31,7 @@ class StoreAvailabilityRequest extends FormRequest
                 'after:starts_at',
                 new ValidAvailabilityDuration(),
             ],
-            'slot_duration' => ['required', 'integer', 'max:60'],
+            'slot_duration' => ['required', 'integer', 'min:30', 'max:60'],
         ];
     }
 }

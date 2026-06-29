@@ -227,6 +227,26 @@ paths:
         "422":
           $ref: "#/components/responses/UnprocessableContent"
 
+  /availabilities/slots:
+    get:
+      tags:
+        - Availability
+      summary: Get availability slots
+      operationId: getAvailabilitySlots
+      parameters:
+        - $ref: "#/components/parameters/DoctorId"
+        - $ref: "#/components/parameters/From"
+        - $ref: "#/components/parameters/To"
+      responses:
+        "200":
+          description: Availability slots retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AvailabilitySlotCollection"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
+
   /doctors/{id}/availabilities:
     post:
       tags:
@@ -461,15 +481,33 @@ components:
       properties:
         doctor:
           $ref: "#/components/schemas/Doctor"
-        startsAt:
+        starts_at:
           type: string
           format: date
           example: 2026-07-02 08:00:00
-        endsAt:
+        ends_at:
           type: string
           format: date
           example: 2026-07-02 08:00:00
-        slotDuration:
+        slot_duration:
+          type: integer
+          example: 30
+
+    AvailabilitySlot:
+      type: object
+      properties:
+        doctor_id:
+          type: integer
+          example: 1
+        starts_at:
+          type: string
+          format: date
+          example: 2026-07-02 08:00:00
+        ends_at:
+          type: string
+          format: date
+          example: 2026-07-02 08:00:00
+        duration:
           type: integer
           example: 30
 
@@ -484,6 +522,22 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Availability"
+        links:
+          $ref: "#/components/schemas/PaginationLinks"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    AvailabilitySlotCollection:
+      type: object
+      required:
+        - data
+        - links
+        - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/AvailabilitySlot"
         links:
           $ref: "#/components/schemas/PaginationLinks"
         meta:

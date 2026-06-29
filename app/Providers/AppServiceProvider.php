@@ -3,9 +3,15 @@
 namespace App\Providers;
 
 use App\DataSource\Eloquent\AvailabilityRepository;
+use App\DataSource\Eloquent\DoctorRepository;
 use App\DataSource\Repositories\AvailabilityRepositoryInterface;
+use App\DataSource\Repositories\DoctorRepositoryInterface;
 use App\Domain\Availability\Contracts\CreateAvailabilityServiceInterface;
+use App\Domain\Availability\Contracts\ListAvailableSlotsServiceInterface;
 use App\Domain\Availability\Services\CreateAvailabilityService;
+use App\Domain\Availability\Services\ListAvailableSlotsService;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,6 +30,11 @@ class AppServiceProvider extends ServiceProvider
             AvailabilityRepositoryInterface::class,
             AvailabilityRepository::class
         );
+
+        $this->app->bind(
+            ListAvailableSlotsServiceInterface::class,
+            ListAvailableSlotsService::class,
+        );
     }
 
     /**
@@ -31,6 +42,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Collection::macro('paginate', function ($perPage = 15) {
+            $page = LengthAwarePaginator::resolveCurrentPage('page');
+
+            return new LengthAwarePaginator($this->forPage($page, $perPage), $this->count(), $perPage, $page, [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+                'query' => request()->query(),
+            ]);
+        });
     }
 }

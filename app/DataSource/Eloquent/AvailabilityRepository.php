@@ -4,9 +4,11 @@ namespace App\DataSource\Eloquent;
 
 use App\DataSource\Repositories\AvailabilityRepositoryInterface;
 use App\Domain\Availability\Commands\CreateAvailabilityCommand;
+use App\Domain\Availability\Queries\ListAvailableSlotsQuery;
 use App\Models\Availability;
 use App\Models\Doctor;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Collection;
 
 class AvailabilityRepository implements AvailabilityRepositoryInterface
 {
@@ -27,5 +29,30 @@ class AvailabilityRepository implements AvailabilityRepositoryInterface
             ->where('starts_at', '<', $endsAt)
             ->where('ends_at', '>', $startsAt)
             ->exists();
+    }
+
+    /**
+     * @return Collection<int, Availability>
+     */
+    public function listAvailabilities(
+        ListAvailableSlotsQuery $query,
+    ): Collection {
+        return Availability::query()
+            ->with('doctor')
+            ->when(
+                $query->doctorId,
+                fn($builder) => $builder->where('doctor_id', $query->doctorId),
+            )
+            ->when(
+                $query->from,
+                fn($builder) => $builder->where('starts_at', '>=', $query->from),
+                fn($builder) => $builder->where('starts_at', '>=', CarbonImmutable::now()),
+            )
+            ->when(
+                $query->to,
+                fn($builder) => $builder->where('ends_at', '<=', $query->to),
+            )
+            ->orderBy('starts_at', 'desc')
+            ->get();
     }
 }

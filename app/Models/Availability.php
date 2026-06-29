@@ -20,7 +20,6 @@ class Availability extends Model
         return $this->belongsTo(Doctor::class);
     }
 
-    // This is the scope we added TODO types
     public function scopeFilter(Builder $query, AvailabilityFilters $filters)
     {
         return $filters->apply($query);

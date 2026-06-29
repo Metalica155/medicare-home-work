@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Actions\Availabilities\GetAvailabilitiesAction;
+use App\Http\Actions\Availabilities\ListAvailableSlotsAction;
 use App\Http\Actions\Availabilities\StoreAvailabilityAction;
 use App\Http\Actions\Doctors\DeleteDoctorAction;
 use App\Http\Actions\Doctors\GetDoctorAction;
@@ -32,5 +33,6 @@ Route::delete('/patients/{patient}', DeletePatientAction::class);
 
 // Availability
 Route::get('/availabilities', GetAvailabilitiesAction::class);
+Route::get('/availabilities/slots', ListAvailableSlotsAction::class);
 
 Route::post('/doctors/{doctor}/availabilities', StoreAvailabilityAction::class);
