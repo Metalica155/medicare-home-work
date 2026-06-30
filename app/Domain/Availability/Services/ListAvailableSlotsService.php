@@ -4,10 +4,10 @@ namespace App\Domain\Availability\Services;
 
 use App\DataSource\Repositories\AvailabilityRepositoryInterface;
 use App\Domain\Availability\Contracts\ListAvailableSlotsServiceInterface;
+use App\Domain\Availability\Contracts\SlotAvailabilityFilterServiceInterface;
 use App\Domain\Availability\Contracts\SlotGeneratorServiceInterface;
 use App\Domain\Availability\Queries\ListAvailableSlotsQuery;
 use App\Domain\Availability\ValueObjects\Slot;
-use App\Models\Availability;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 
@@ -16,6 +16,7 @@ class ListAvailableSlotsService implements ListAvailableSlotsServiceInterface
     public function __construct(
         private AvailabilityRepositoryInterface $repository,
         private SlotGeneratorServiceInterface $slotGenerator,
+        private SlotAvailabilityFilterServiceInterface $slotFilterService,
     ) {}
 
     /**
@@ -25,11 +26,17 @@ class ListAvailableSlotsService implements ListAvailableSlotsServiceInterface
     {
         $now = CarbonImmutable::now();
 
-        return $this->repository
-            ->listAvailabilities($query)
-            ->flatMap(fn(Availability $availability) => $this->slotGenerator->generateSlots(
-                $availability,
-                $now,
-            ));
+        $slots = new Collection();
+
+        foreach ($this->repository->listAvailabilities($query) as $availability) {
+            $slots = $slots->merge(
+                $this->slotFilterService->filter(
+                    $this->slotGenerator->generateSlots($availability, $now),
+                    $availability->doctor->appointments,
+                )
+            );
+        }
+
+        return $slots;
     }
 }

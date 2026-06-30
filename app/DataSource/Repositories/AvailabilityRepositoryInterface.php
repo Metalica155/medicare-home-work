@@ -26,6 +26,6 @@ interface AvailabilityRepositoryInterface
      * @return Collection<int, Availability>
      */
     public function listAvailabilities(
-        ListAvailableSlotsQuery $query,
+        ListAvailableSlotsQuery $input,
     ): Collection;
 }

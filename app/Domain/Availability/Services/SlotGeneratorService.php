@@ -6,17 +6,18 @@ use App\Domain\Availability\Contracts\SlotGeneratorServiceInterface;
 use App\Domain\Availability\ValueObjects\Slot;
 use App\Models\Availability;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Collection;
 
 class SlotGeneratorService implements SlotGeneratorServiceInterface
 {
     /**
-     * @return Slot[]
+     * @return Collection<int, Slot>
      */
     public function generateSlots(
         Availability $availability,
         CarbonImmutable $now,
-    ): array {
-        $slots = [];
+    ): Collection {
+        $slots = new Collection();
 
         $current = CarbonImmutable::parse($availability->starts_at);
         $end = CarbonImmutable::parse($availability->ends_at);
@@ -25,12 +26,12 @@ class SlotGeneratorService implements SlotGeneratorServiceInterface
             ($slotEnd = $current->addMinutes($availability->slot_duration))->lessThanOrEqualTo($end)
         ) {
             if ($current->greaterThan($now)) {
-                $slots[] = new Slot(
+                $slots->push(new Slot(
                     doctorId: $availability->doctor->id,
                     duration: $availability->slot_duration,
                     startsAt: $current,
                     endsAt: $slotEnd,
-                );
+                ));
             }
 
             $current = $slotEnd;

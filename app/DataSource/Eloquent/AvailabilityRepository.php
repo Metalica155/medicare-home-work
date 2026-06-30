@@ -35,19 +35,31 @@ class AvailabilityRepository implements AvailabilityRepositoryInterface
      * @return Collection<int, Availability>
      */
     public function listAvailabilities(
-        ListAvailableSlotsQuery $query,
+        ListAvailableSlotsQuery $input,
     ): Collection {
         return Availability::query()
-            ->with('doctor')
+            ->with([
+                'doctor',
+                'doctor.appointments' => function ($query) use ($input) {
+                    $query->when(
+                        $input->from && $input->to,
+                        fn($builder) => $builder
+                            ->where('start_time', '<=', $input->to)
+                            ->where('end_time', '>=', $input->from),
+                        fn($builder) => $builder
+                            ->where('end_time', '>=', CarbonImmutable::now()),
+                    );
+                },
+            ])
             ->when(
-                $query->doctorId,
-                fn($builder) => $builder->where('doctor_id', $query->doctorId),
+                $input->doctorId,
+                fn($builder) => $builder->where('doctor_id', $input->doctorId),
             )
             ->when(
-                $query->from && $query->to,
+                $input->from && $input->to,
                 fn($builder) => $builder
-                    ->where('starts_at', '<', $query->to)
-                    ->where('ends_at', '>', $query->from),
+                    ->where('starts_at', '<', $input->to)
+                    ->where('ends_at', '>', $input->from),
                 fn($builder) => $builder
                     ->where('ends_at', '>', CarbonImmutable::now()),
             )
