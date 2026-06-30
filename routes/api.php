@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Actions\Appointments\GetAppointmentAction;
+use App\Http\Actions\Appointments\GetAppointmentsAction;
 use App\Http\Actions\Availabilities\GetAvailabilitiesAction;
 use App\Http\Actions\Availabilities\ListAvailableSlotsAction;
 use App\Http\Actions\Availabilities\StoreAvailabilityAction;
@@ -40,3 +41,5 @@ Route::post('/doctors/{doctor}/availabilities', StoreAvailabilityAction::class);
 
 // Appointments
 Route::get('/appointments/{appointment}', GetAppointmentAction::class);
+
+Route::get('/patients/{patient}/appointments', GetAppointmentsAction::class);

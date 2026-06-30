@@ -293,6 +293,28 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
 
+  /patients/{id}/appointments:
+    get:
+      tags:
+        - Appointment
+      summary: Get Appointments by patient id
+      operationId: getAppointments
+      parameters:
+        - $ref: "#/components/parameters/Id"
+        - $ref: "#/components/parameters/DoctorId"
+        - $ref: "#/components/parameters/From"
+        - $ref: "#/components/parameters/To"
+        - $ref: "#/components/parameters/Order"
+      responses:
+        "200":
+          description: Appointments retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppointmentCollection"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
+
 components:
   parameters:
     Id:
@@ -339,6 +361,14 @@ components:
         type: string
         format: date
         example: 2026-07-01T09:00:00
+
+    Status:
+      name: status
+      in: query
+      required: false
+      description: appointment status
+      schema:
+        $ref: "#/components/schemas/status"
 
   schemas:
     Order:
@@ -392,13 +422,7 @@ components:
           format: date
           example: 2026-07-02 08:00:00
         status:
-          type: string
-          enum:
-            - Pending
-            - Confirmed
-            - Cancelled
-            - Completed
-          example: Pending
+          $ref: "#/components/schemas/status"
         cancel_reason:
           type: string
           nullable: true
@@ -516,6 +540,15 @@ components:
         - Neurologist
         - General Practitioner
 
+    status:
+      type: string
+      enum:
+        - Pending
+        - Confirmed
+        - Cancelled
+        - Completed
+      example: Pending
+
     PhoneNumber:
       type: string
       format: phone number
@@ -567,6 +600,22 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Availability"
+        links:
+          $ref: "#/components/schemas/PaginationLinks"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    AppointmentCollection:
+      type: object
+      required:
+        - data
+        - links
+        - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Appointment"
         links:
           $ref: "#/components/schemas/PaginationLinks"
         meta:

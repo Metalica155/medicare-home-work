@@ -11,7 +11,9 @@ abstract class Filters
     public function apply(Builder $query)
     {
         foreach ($this->receivedFilters() as $name => $value) {
-            $filterInstance = new $this->filters[$name];
+            [$class, $column] = $this->filters[$name];
+
+            $filterInstance = new $class($column);
             $query = $filterInstance($query, $value);
         }
 

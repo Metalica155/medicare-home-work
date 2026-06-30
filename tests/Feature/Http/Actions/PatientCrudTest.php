@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Http\Actions;
 
-use App\Models\Doctor;
 use App\Models\Patient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

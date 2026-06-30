@@ -13,6 +13,8 @@ class Appointment extends Model
     /** @use HasFactory<\Database\Factories\AppointmentFactory> */
     use HasFactory;
 
+    use Filterable;
+
     public function doctor(): BelongsTo
     {
         return $this->belongsTo(Doctor::class);

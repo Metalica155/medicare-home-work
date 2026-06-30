@@ -4,10 +4,10 @@ namespace App\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class FromFilter
+class FromFilter extends Filter
 {
     function __invoke(Builder $query, string $from): Builder
     {
-        return $query->where('starts_at', '>=', $from);
+        return $query->where($this->column, '>=', $from);
     }
 }
