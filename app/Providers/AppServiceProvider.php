@@ -8,8 +8,10 @@ use App\DataSource\Repositories\AvailabilityRepositoryInterface;
 use App\DataSource\Repositories\DoctorRepositoryInterface;
 use App\Domain\Availability\Contracts\CreateAvailabilityServiceInterface;
 use App\Domain\Availability\Contracts\ListAvailableSlotsServiceInterface;
+use App\Domain\Availability\Contracts\SlotGeneratorServiceInterface;
 use App\Domain\Availability\Services\CreateAvailabilityService;
 use App\Domain\Availability\Services\ListAvailableSlotsService;
+use App\Domain\Availability\Services\SlotGeneratorService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
@@ -34,6 +36,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             ListAvailableSlotsServiceInterface::class,
             ListAvailableSlotsService::class,
+        );
+
+        $this->app->bind(
+            SlotGeneratorServiceInterface::class,
+            SlotGeneratorService::class,
         );
     }
 

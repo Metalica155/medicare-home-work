@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Domain\Availability\Services;
+namespace Tests\Unit;
 
 use App\DataSource\Repositories\AvailabilityRepositoryInterface;
 use App\Domain\Availability\Commands\CreateAvailabilityCommand;

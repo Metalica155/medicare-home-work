@@ -275,6 +275,24 @@ paths:
         "409":
           $ref: "#/components/responses/Conflict"
 
+  /appointments/{id}:
+    get:
+      tags:
+        - Appointment
+      summary: Get Appointment by ID
+      operationId: getAppointment
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Appointment retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppointmentResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
 components:
   parameters:
     Id:
@@ -362,6 +380,33 @@ components:
           example: john.doe@example.com
         phone_number:
           $ref: "#/components/schemas/PhoneNumber"
+
+    Appointment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        start_time:
+          type: string
+          format: date
+          example: 2026-07-02 08:00:00
+        status:
+          type: string
+          enum:
+            - Pending
+            - Confirmed
+            - Cancelled
+            - Completed
+          example: Pending
+        cancel_reason:
+          type: string
+          nullable: true
+          example: Some reason
+        doctor:
+          $ref: "#/components/schemas/Doctor"
+        patient:
+          $ref: "#/components/schemas/Patient"
 
     DoctorCollection:
       type: object
@@ -647,6 +692,14 @@ components:
       properties:
         data:
           $ref: "#/components/schemas/Patient"
+
+    AppointmentResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: "#/components/schemas/Appointment"
 
     AvailabilityResponse:
       type: object

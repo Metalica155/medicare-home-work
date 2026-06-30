@@ -2,11 +2,10 @@
 
 namespace App\Http\Resources;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AvailabilityResource extends JsonResource
+class AppointmentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,10 +15,13 @@ class AvailabilityResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'starts_at'     => Carbon::parse($this->starts_at)->toRfc3339String(),
-            'ends_at'       => Carbon::parse($this->ends_at)->toRfc3339String(),
-            'slot_duration' => $this->slot_duration,
+            'id'            => $this->id,
+            'start_time'    => $this->start_time,
+            'end_time'      => $this->end_time,
+            'status'        => $this->status,
+            'cancel_reason' => $this->cancel_reason,
             'doctor'        => new DoctorResource($this->doctor),
+            'patient'       => new PatientResource($this->patient),
         ];
     }
 }

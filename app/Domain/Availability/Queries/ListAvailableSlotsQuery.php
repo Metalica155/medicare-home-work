@@ -7,9 +7,9 @@ use Carbon\CarbonImmutable;
 final readonly class ListAvailableSlotsQuery
 {
     public function __construct(
-        public ?int $doctorId,
-        public ?CarbonImmutable $from,
-        public ?CarbonImmutable $to,
+        public ?int $doctorId = null,
+        public ?CarbonImmutable $from = null,
+        public ?CarbonImmutable $to = null,
     ) {}
 
     public static function fromArray(array $data): self

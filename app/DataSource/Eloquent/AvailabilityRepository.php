@@ -44,15 +44,14 @@ class AvailabilityRepository implements AvailabilityRepositoryInterface
                 fn($builder) => $builder->where('doctor_id', $query->doctorId),
             )
             ->when(
-                $query->from,
-                fn($builder) => $builder->where('starts_at', '>=', $query->from),
-                fn($builder) => $builder->where('starts_at', '>=', CarbonImmutable::now()),
+                $query->from && $query->to,
+                fn($builder) => $builder
+                    ->where('starts_at', '<', $query->to)
+                    ->where('ends_at', '>', $query->from),
+                fn($builder) => $builder
+                    ->where('ends_at', '>', CarbonImmutable::now()),
             )
-            ->when(
-                $query->to,
-                fn($builder) => $builder->where('ends_at', '<=', $query->to),
-            )
-            ->orderBy('starts_at', 'desc')
+            ->orderBy('starts_at')
             ->get();
     }
 }

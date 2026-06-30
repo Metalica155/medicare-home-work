@@ -2,11 +2,10 @@
 
 namespace App\Http\Resources;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SlotResource extends JsonResource
+class AppointmentsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,10 +15,7 @@ class SlotResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'doctor_id' => $this->doctorId,
-            'starts_at' => $this->startsAt->toRfc3339String(),
-            'ends_at'   => $this->endsAt->toRfc3339String(),
-            'duration'  => $this->duration,
+            'data' => AppointmentResource::collection($this->collection),
         ];
     }
 }
