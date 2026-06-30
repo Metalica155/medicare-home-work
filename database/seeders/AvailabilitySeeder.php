@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Availability;
 use App\Models\Doctor;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 

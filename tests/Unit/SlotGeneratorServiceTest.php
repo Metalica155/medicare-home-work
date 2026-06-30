@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Domain\Availability\Services\SlotGeneratorService;
 use App\Domain\Availability\ValueObjects\Slot;
+use App\Models\Appointment;
 use App\Models\Availability;
 use App\Models\Doctor;
 use Carbon\CarbonImmutable;
@@ -26,6 +27,7 @@ class SlotGeneratorServiceTest extends TestCase
         $doctor->id = 1;
 
         $availability = new Availability();
+        $availability->id = 1;
         $availability->starts_at = '2026-07-01 09:00:00';
         $availability->ends_at = '2026-07-01 10:30:00';
         $availability->slot_duration = 30;
@@ -58,6 +60,7 @@ class SlotGeneratorServiceTest extends TestCase
         $doctor->id = 1;
 
         $availability = new Availability();
+        $availability->id = 1;
         $availability->starts_at = '2026-07-01 09:00:00';
         $availability->ends_at = '2026-07-01 10:30:00';
         $availability->slot_duration = 30;
@@ -87,6 +90,7 @@ class SlotGeneratorServiceTest extends TestCase
         $doctor->id = 1;
 
         $availability = new Availability();
+        $availability->id = 1;
         $availability->starts_at = '2026-07-01 08:00:00';
         $availability->ends_at = '2026-07-01 09:00:00';
         $availability->slot_duration = 30;
@@ -106,6 +110,8 @@ class SlotGeneratorServiceTest extends TestCase
         $doctor->id = 1;
 
         $availability = new Availability();
+        $availability->id = 1;
+        $availability->id = 1;
         $availability->starts_at = '2026-07-01 09:00:00';
         $availability->ends_at = '2026-07-01 10:20:00';
         $availability->slot_duration = 30;

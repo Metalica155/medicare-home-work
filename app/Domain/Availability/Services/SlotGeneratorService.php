@@ -27,6 +27,7 @@ class SlotGeneratorService implements SlotGeneratorServiceInterface
         ) {
             if ($current->greaterThan($now)) {
                 $slots->push(new Slot(
+                    availabilityId: $availability->id,
                     doctorId: $availability->doctor->id,
                     duration: $availability->slot_duration,
                     startsAt: $current,

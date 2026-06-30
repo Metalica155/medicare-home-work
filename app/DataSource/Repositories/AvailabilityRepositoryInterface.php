@@ -28,4 +28,10 @@ interface AvailabilityRepositoryInterface
     public function listAvailabilities(
         ListAvailableSlotsQuery $input,
     ): Collection;
+
+    public function findContainingAvailability(
+        int $doctorId,
+        CarbonImmutable $startsAt,
+        CarbonImmutable $endsAt,
+    ): ?Availability;
 }

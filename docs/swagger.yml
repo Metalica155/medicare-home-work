@@ -315,6 +315,33 @@ paths:
         "422":
           $ref: "#/components/responses/UnprocessableContent"
 
+    post:
+      tags:
+        - Appointment
+      summary: Create Appointment
+      operationId: createAppointment
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAppointmentRequest"
+      responses:
+        "201":
+          description: Appointment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppointmentResponse"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
 components:
   parameters:
     Id:
@@ -574,6 +601,9 @@ components:
     AvailabilitySlot:
       type: object
       properties:
+        availability_id:
+          type: integer
+          example: 1
         doctor_id:
           type: integer
           example: 1
@@ -670,6 +700,25 @@ components:
         slot_duration:
           type: integer
           example: 30
+
+    CreateAppointmentRequest:
+      type: object
+      required:
+        - start_time
+        - end_time
+        - doctor_id
+      properties:
+        start_time:
+          type: string
+          format: date
+          example: 2026-07-02 08:00:00
+        end_time:
+          type: string
+          format: date
+          example: 2026-07-02 08:00:00
+        doctor_id:
+          type: integer
+          example: 1
 
     CreatePatientRequest:
       type: object

@@ -66,4 +66,17 @@ class AvailabilityRepository implements AvailabilityRepositoryInterface
             ->orderBy('starts_at')
             ->get();
     }
+
+    public function findContainingAvailability(
+        int $doctorId,
+        CarbonImmutable $startsAt,
+        CarbonImmutable $endsAt,
+    ): ?Availability {
+        return Availability::query()
+            ->where('doctor_id', $doctorId)
+            ->where('starts_at', '<=', $startsAt)
+            ->where('ends_at', '>=', $endsAt)
+            ->orderBy('starts_at')
+            ->first();
+    }
 }

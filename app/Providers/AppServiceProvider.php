@@ -2,10 +2,16 @@
 
 namespace App\Providers;
 
+use App\DataSource\Eloquent\AppointmentRepository;
 use App\DataSource\Eloquent\AvailabilityRepository;
 use App\DataSource\Eloquent\DoctorRepository;
+use App\DataSource\Repositories\AppointmentRepositoryInterface;
 use App\DataSource\Repositories\AvailabilityRepositoryInterface;
 use App\DataSource\Repositories\DoctorRepositoryInterface;
+use App\Domain\Appointment\Contracts\CreateAppointmentServiceInterface;
+use App\Domain\Appointment\Contracts\SlotValidatorServiceInterface;
+use App\Domain\Appointment\Services\CreateAppointmentService;
+use App\Domain\Availability\Bridges\SlotValidatorServiceBridge;
 use App\Domain\Availability\Contracts\CreateAvailabilityServiceInterface;
 use App\Domain\Availability\Contracts\ListAvailableSlotsServiceInterface;
 use App\Domain\Availability\Contracts\SlotAvailabilityFilterServiceInterface;
@@ -48,6 +54,26 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             SlotAvailabilityFilterServiceInterface::class,
             SlotAvailabilityFilterService::class,
+        );
+
+        $this->app->bind(
+            CreateAvailabilityServiceInterface::class,
+            CreateAvailabilityService::class,
+        );
+
+        $this->app->bind(
+            AppointmentRepositoryInterface::class,
+            AppointmentRepository::class,
+        );
+
+        $this->app->bind(
+            CreateAppointmentServiceInterface::class,
+            CreateAppointmentService::class,
+        );
+
+        $this->app->bind(
+            SlotValidatorServiceInterface::class,
+            SlotValidatorServiceBridge::class,
         );
     }
 

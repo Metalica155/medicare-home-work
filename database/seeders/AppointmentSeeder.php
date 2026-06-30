@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\AppointmentStatus;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\Patient;
