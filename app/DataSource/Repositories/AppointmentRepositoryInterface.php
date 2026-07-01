@@ -2,6 +2,7 @@
 
 namespace App\DataSource\Repositories;
 
+use App\AppointmentStatus;
 use App\Domain\Appointment\Commands\CreateAppointmentCommand;
 use App\Models\Appointment;
 use App\Models\Patient;
@@ -25,4 +26,6 @@ interface AppointmentRepositoryInterface
         CarbonImmutable $start,
         CarbonImmutable $end,
     ): bool;
+
+    public function updateStatus(Appointment $appointment, AppointmentStatus $newStatus): Appointment;
 }

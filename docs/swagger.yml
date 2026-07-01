@@ -342,6 +342,23 @@ paths:
         "409":
           $ref: "#/components/responses/Conflict"
 
+  /doctors/{doctorPathId}/appointments/{appointmentPathId}/confirm:
+    patch:
+      tags:
+        - Appointment
+      summary: Confirm appointment
+      operationId: ConfirmAppointment
+      parameters:
+        - $ref: "#/components/parameters/DoctorPathId"
+        - $ref: "#/components/parameters/AppointmentPathId"
+      responses:
+        "204":
+          description: Appointment confirmed successfully
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
+
 components:
   parameters:
     Id:
@@ -349,6 +366,24 @@ components:
       in: path
       required: true
       description: ID
+      schema:
+        type: integer
+        example: 1
+
+    DoctorPathId:
+      name: doctorPathId
+      in: path
+      required: true
+      description: Doctor ID
+      schema:
+        type: integer
+        example: 1
+
+    AppointmentPathId:
+      name: appointmentPathId
+      in: path
+      required: true
+      description: Appointment ID
       schema:
         type: integer
         example: 1

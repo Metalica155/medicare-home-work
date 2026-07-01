@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Actions\Appointments\ConfirmAppointmentAction;
 use App\Http\Actions\Appointments\GetAppointmentAction;
 use App\Http\Actions\Appointments\GetAppointmentsAction;
 use App\Http\Actions\Appointments\StoreAppointmentAction;
@@ -46,3 +47,8 @@ Route::get('/appointments/{appointment}', GetAppointmentAction::class);
 Route::get('/patients/{patient}/appointments', GetAppointmentsAction::class);
 
 Route::post('/patients/{patient}/appointments', StoreAppointmentAction::class);
+
+Route::patch(
+    '/doctors/{doctor}/appointments/{appointment}/confirm',
+    ConfirmAppointmentAction::class
+)->scopeBindings();;

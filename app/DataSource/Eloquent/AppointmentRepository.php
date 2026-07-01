@@ -52,4 +52,14 @@ class AppointmentRepository implements AppointmentRepositoryInterface
             ->where('end_time', '>', $start)
             ->exists();
     }
+
+    public function updateStatus(
+        Appointment $appointment,
+        AppointmentStatus $newStatus
+    ): Appointment {
+        $appointment->update(['status' => $newStatus]);
+        $appointment->save();
+
+        return $appointment;
+    }
 }
