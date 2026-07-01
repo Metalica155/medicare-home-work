@@ -75,7 +75,7 @@ class TransitionValidatorTest extends TestCase
     public function test_executes_before_24_hours_rule(): void
     {
         $appointment = new Appointment();
-        $appointment->status = AppointmentStatus::Pending;
+        $appointment->status = AppointmentStatus::Confirmed;
 
         $rule = Mockery::mock(Rule::class);
 

@@ -55,9 +55,24 @@ class AppointmentRepository implements AppointmentRepositoryInterface
 
     public function updateStatus(
         Appointment $appointment,
-        AppointmentStatus $newStatus
+        AppointmentStatus $newStatus,
     ): Appointment {
         $appointment->update(['status' => $newStatus]);
+        $appointment->save();
+
+        return $appointment;
+    }
+
+    public function cancel(
+        Appointment $appointment,
+        ?string $reason = null,
+    ): Appointment {
+        $appointment->update(
+            [
+                'status'        => AppointmentStatus::Cancelled,
+                'cancel_reason' => $reason,
+            ]
+        );
         $appointment->save();
 
         return $appointment;

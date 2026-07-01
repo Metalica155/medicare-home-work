@@ -376,6 +376,28 @@ paths:
         "422":
           $ref: "#/components/responses/UnprocessableContent"
 
+  /appointments/{appointment}/cancel:
+    patch:
+      tags:
+        - Appointment
+      summary: Cancel appointment
+      operationId: CancelAppointment
+      parameters:
+        - $ref: "#/components/parameters/AppointmentPathId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CancelAppointmentRequest"
+      responses:
+        "204":
+          description: Appointment cancelled successfully
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
+
 components:
   parameters:
     Id:
@@ -419,7 +441,8 @@ components:
       in: query
       required: false
       description: Order of the result set
-      $ref: "#/components/schemas/Order"
+      schema:
+        $ref: "#/components/schemas/Order"
 
     From:
       name: from
@@ -733,6 +756,23 @@ components:
           format: email
         expertise:
           $ref: "#/components/schemas/Expertise"
+
+    CancelAppointmentRequest:
+      type: object
+      required:
+        - doctor_id
+        - patient_id
+        - reason
+      properties:
+        doctor_id:
+          type: integer
+          example: 1
+        patient_id:
+          type: integer
+          example: 1
+        reason:
+          type: string
+          example: Some reason to cancel
 
     CreateAvalabilityRequest:
       type: object

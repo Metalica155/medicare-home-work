@@ -28,4 +28,9 @@ interface AppointmentRepositoryInterface
     ): bool;
 
     public function updateStatus(Appointment $appointment, AppointmentStatus $newStatus): Appointment;
+
+    public function cancel(
+        Appointment $appointment,
+        ?string $reason = null,
+    ): Appointment;
 }

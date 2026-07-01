@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Actions\Appointments\CancelAppointmentAction;
 use App\Http\Actions\Appointments\CompleteAppointmentAction;
 use App\Http\Actions\Appointments\ConfirmAppointmentAction;
 use App\Http\Actions\Appointments\GetAppointmentAction;
@@ -57,4 +58,9 @@ Route::patch(
 Route::patch(
     '/doctors/{doctor}/appointments/{appointment}/completed',
     CompleteAppointmentAction::class
+)->scopeBindings();;
+
+Route::patch(
+    '/appointments/{appointment}/cancel',
+    CancelAppointmentAction::class
 )->scopeBindings();;

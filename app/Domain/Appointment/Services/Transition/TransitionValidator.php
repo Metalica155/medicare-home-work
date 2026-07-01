@@ -12,42 +12,29 @@ class TransitionValidator
         private readonly RuleResolver $ruleResolver,
     ) {}
 
-    /**
-     * @var array<string, array{
-     *     from: AppointmentStatus[],
-     *     rules: array<class-string<Rule>>
-     * }>
-     */
     private const array TRANSITIONS = [
-        AppointmentStatus::Confirmed->value => [
-            'from'  => [AppointmentStatus::Pending],
-            'rules' => [],
+        AppointmentStatus::Pending->value => [
+            AppointmentStatus::Confirmed->value => [],
+            AppointmentStatus::Cancelled->value => [],
         ],
-        AppointmentStatus::Completed->value => [
-            'from'  => [AppointmentStatus::Confirmed],
-            'rules' => [
+
+        AppointmentStatus::Confirmed->value => [
+            AppointmentStatus::Completed->value => [
                 AfterAppointmentRule::class,
             ],
-        ],
-        AppointmentStatus::Cancelled->value => [
-            'from'  => [AppointmentStatus::Pending, AppointmentStatus::Confirmed],
-            'rules' => [Before24HoursRule::class],
+
+            AppointmentStatus::Cancelled->value => [
+                Before24HoursRule::class,
+            ],
         ],
     ];
 
     public function validate(Appointment $appointment, AppointmentStatus $newStatus): void
     {
-        if (! array_key_exists($newStatus->value, static::TRANSITIONS)) {
-            throw new InvalidAppointmentStatusTransition();
-        }
+        $rules = self::TRANSITIONS[$appointment->status->value][$newStatus->value]
+            ?? throw new InvalidAppointmentStatusTransition();
 
-        $transition = static::TRANSITIONS[$newStatus->value];
-
-        if (!in_array($appointment->status, $transition['from'], true)) {
-            throw new InvalidAppointmentStatusTransition();
-        }
-
-        foreach ($transition['rules'] as $rule) {
+        foreach ($rules as $rule) {
             $this->ruleResolver->resolve($rule)->validate($appointment);
         }
     }

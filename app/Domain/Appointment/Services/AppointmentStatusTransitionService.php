@@ -15,9 +15,16 @@ class AppointmentStatusTransitionService implements AppointmentStatusTransitionS
         private readonly AppointmentRepository $repository,
     ) {}
 
-    public function transitionStatus(Appointment $appointment, AppointmentStatus $newStatus): Appointment
-    {
+    public function transitionStatus(
+        Appointment $appointment,
+        AppointmentStatus $newStatus,
+        ?string $reason = null,
+    ): Appointment {
         $this->transitionValidator->validate($appointment, $newStatus);
+
+        if ($newStatus === AppointmentStatus::Cancelled) {
+            return $this->repository->cancel($appointment, $reason);
+        }
 
         return $this->repository->updateStatus($appointment, $newStatus);
     }

@@ -13,8 +13,11 @@ abstract class AppointmentStatusTransitionAction extends Action
         protected readonly AppointmentStatusTransitionServiceInterface $statusTransitionService,
     ) {}
 
-    protected function transition(Appointment $appointment, AppointmentStatus $newStatus): Appointment
-    {
-        return $this->statusTransitionService->transitionStatus($appointment, $newStatus);
+    protected function transition(
+        Appointment $appointment,
+        AppointmentStatus $newStatus,
+        ?string $reason = null,
+    ): Appointment {
+        return $this->statusTransitionService->transitionStatus($appointment, $newStatus, $reason);
     }
 }

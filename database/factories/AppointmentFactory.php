@@ -15,7 +15,20 @@ class AppointmentFactory extends Factory
 {
     public function definition(): array
     {
+        $possibleMinutes = match (fake()->randomElement([30, 45, 60])) {
+            30 => [0, 30],
+            45 => [0, 45],
+            60 => [0],
+        };
+
         $start = fake()->dateTimeBetween('+1 day', '+1 month');
+
+        $start->setTime(
+            fake()->numberBetween(0, 16),
+            fake()->randomElement($possibleMinutes),
+            0,
+        );
+
         $end = (clone $start)->modify('+30 minutes');
 
         return [
