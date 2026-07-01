@@ -1,58 +1,47 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Medicare homework Appointment api
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Requirements
+- sqlite (Can be changed to mysql from env)
 
-## About Laravel
+## Install
+- run `php artisan migrate` this will create the db and run the migrations
+- run `composer run dev` to start the dev api
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Docs
+- /docs/swagger.yml
+- Route: [Swagger endpoint](http://localhost:8000/docs) here an interactive swagger UI
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Architecture
+I have chosen a "lazy" layered and DDD architecture. The architecture layer rules are not fully enforced, which reduces the overhead on simpler feature flows, for example the get single resource endpoint.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+The planned api flow is: Http -> Domain -> DataSource
 
-## Learning Laravel
+I've tried to use Laravel's features which are simplified most of the code.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+In the http layer I chose to have Actions instead of big controllers. In my opinion it is more readable and compact.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Note on the domain layer
+In the domain layer I tried to create separate(folders) domains. This prevents to have too much dependency on different features.
+Tha main benefit is that every feature encapsulates itself with its own dependencies.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+When there is a cross dependecy, its reasonable to create a bridge(or other) patterns which limits the interaction between different features.
+This limits the dependency between them, also if the features are properly encapsulated then in case of a feature growing too big for this api then it could be moved into a different one, without too much hassle.
 
-## Agentic Development
+### The layers responsibilities:
+- Http
+    Parsing and validating the request with a main focus on the format of the request. (There are some cases where some business rules are here)
+- Domain
+    Main business logic. This Layer should be as indepenent as possible from the other layers.
+- DataSource
+    Is to give a data layer to be used in the Domain layer. Main reason is to have the domain layer to not depend on data source implementation.
+    For this api its _mostly_ true.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
-```
-
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Notes on improvements
+- Jobs
+    There could be a business rule reason to have a cron job to regularly check the _Appointments_ statuses and chenge them. For example: When the appointment end_time is smaller than the current time. The system could change that status into Completed or _Missed_
+    Also a DB cleanup and old Appointments into an archive table.
+- Slots
+    In my opinion it would simplify the api complexity if the slots wouldn't be calculated from Avaibility, but during the creation of said resource the app would create the appointment entities with a baseline status.
+    It would reduce the error probability from developers.
+- Caching
+    Especially Slot listing endpoint could be cached, so the costly calculation is limited.
