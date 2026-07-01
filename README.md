@@ -1,47 +1,73 @@
-# Medicare homework Appointment api
+# Medicare Homework – Appointment API
 
 ## Requirements
-- sqlite (Can be changed to mysql from env)
 
-## Install
-- run `php artisan migrate` this will create the db and run the migrations
-- run `composer run dev` to start the dev api
+* SQLite (can be changed to MySQL via the `.env` configuration)
 
-## Docs
-- /docs/swagger.yml
-- Route: [Swagger endpoint](http://localhost:8000/docs) here an interactive swagger UI
+## Installation
+
+* Run `php artisan migrate` to create the database and execute the migrations.
+* Run `composer run dev` to start the development server.
+
+## Documentation
+
+* Swagger specification: `/docs/swagger.yml`
+* Interactive Swagger UI: http://localhost:8000/docs
 
 ## Architecture
-I have chosen a "lazy" layered and DDD architecture. The architecture layer rules are not fully enforced, which reduces the overhead on simpler feature flows, for example the get single resource endpoint.
 
-The planned api flow is: Http -> Domain -> DataSource
+I chose a "lightweight" layered architecture inspired by Domain-Driven Design (DDD). The layer boundaries are not enforced strictly, which reduces overhead for simpler feature flows, such as retrieving a single resource.
 
-I've tried to use Laravel's features which are simplified most of the code.
+The planned request flow is:
 
-In the http layer I chose to have Actions instead of big controllers. In my opinion it is more readable and compact.
+**HTTP → Domain → DataSource**
 
-### Note on the domain layer
-In the domain layer I tried to create separate(folders) domains. This prevents to have too much dependency on different features.
-Tha main benefit is that every feature encapsulates itself with its own dependencies.
+I also tried to leverage Laravel's built-in features wherever possible to keep the implementation concise.
 
-When there is a cross dependecy, its reasonable to create a bridge(or other) patterns which limits the interaction between different features.
-This limits the dependency between them, also if the features are properly encapsulated then in case of a feature growing too big for this api then it could be moved into a different one, without too much hassle.
+In the HTTP layer, I chose to use **Actions** instead of large controllers. In my opinion, this makes the codebase easier to read, navigate, and maintain.
 
-### The layers responsibilities:
-- Http
-    Parsing and validating the request with a main focus on the format of the request. (There are some cases where some business rules are here)
-- Domain
-    Main business logic. This Layer should be as indepenent as possible from the other layers.
-- DataSource
-    Is to give a data layer to be used in the Domain layer. Main reason is to have the domain layer to not depend on data source implementation.
-    For this api its _mostly_ true.
+### Notes on the Domain layer
 
-## Notes on improvements
-- Jobs
-    There could be a business rule reason to have a cron job to regularly check the _Appointments_ statuses and chenge them. For example: When the appointment end_time is smaller than the current time. The system could change that status into Completed or _Missed_
-    Also a DB cleanup and old Appointments into an archive table.
-- Slots
-    In my opinion it would simplify the api complexity if the slots wouldn't be calculated from Avaibility, but during the creation of said resource the app would create the appointment entities with a baseline status.
-    It would reduce the error probability from developers.
-- Caching
-    Especially Slot listing endpoint could be cached, so the costly calculation is limited.
+Within the Domain layer, I separated the application into feature-specific domains. This helps prevent excessive coupling between different parts of the application.
+
+The main benefit is that each feature encapsulates its own business logic and dependencies.
+
+When cross-feature communication is required, it would be reasonable to introduce bridge (or similar) patterns to limit direct dependencies between features.
+
+Keeping features properly encapsulated also makes it easier to extract a feature into a separate service in the future, should the application grow beyond the scope of this API.
+
+## Layer Responsibilities
+
+### HTTP
+
+Responsible for parsing and validating incoming requests, with a primary focus on request format and input validation. Some lightweight business validation is also performed where appropriate.
+
+### Domain
+
+Contains the application's core business logic. This layer should remain as independent as possible from infrastructure and framework-specific concerns.
+
+### DataSource
+
+Provides the persistence layer used by the Domain. Its primary purpose is to prevent the Domain from depending directly on a specific persistence implementation.
+
+For this assignment, this separation is mostly maintained.
+
+## Possible Improvements
+
+### Background Jobs
+
+A scheduled job could periodically update appointment statuses based on business rules.
+
+For example, when an appointment's `end_time` is earlier than the current time, its status could automatically transition to **Completed** or **Missed**.
+
+A scheduled cleanup process could also archive old appointments into a dedicated archive table.
+
+### Slots
+
+In my opinion, the API could be simplified by persisting appointment slots when an availability is created, rather than generating them dynamically each time they are requested.
+
+This would reduce runtime complexity and lower the likelihood of introducing bugs in slot generation logic.
+
+### Caching
+
+The slot listing endpoint is a good candidate for caching, as generating slots can become computationally expensive. Caching would reduce unnecessary recalculation and improve response times.
