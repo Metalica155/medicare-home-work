@@ -13,8 +13,7 @@ class Before24HoursRule implements Rule
         $cutoff = CarbonImmutable::now()->addHours(24);
 
         if (
-            CarbonImmutable::parse($appointment->start_time)
-            ->greaterThanOrEqualTo($cutoff) === false
+            CarbonImmutable::parse($appointment->start_time)->gte($cutoff) === false
         ) {
             throw new AppointmentBefore24HoursException();
         }

@@ -11,8 +11,7 @@ class AfterAppointmentRule implements Rule
     public function validate(Appointment $appointment): void
     {
         if (
-            CarbonImmutable::parse($appointment->end_time)
-            ->smallerThanOrEqual(CarbonImmutable::now()) === false
+            CarbonImmutable::parse($appointment->end_time)->lte(CarbonImmutable::now()) === false
         ) {
             throw new AppointmentNotInPastException();
         }

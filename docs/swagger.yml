@@ -359,6 +359,23 @@ paths:
         "422":
           $ref: "#/components/responses/UnprocessableContent"
 
+  /doctors/{doctorPathId}/appointments/{appointmentPathId}/completed:
+    patch:
+      tags:
+        - Appointment
+      summary: Complete appointment
+      operationId: CompleteAppointment
+      parameters:
+        - $ref: "#/components/parameters/DoctorPathId"
+        - $ref: "#/components/parameters/AppointmentPathId"
+      responses:
+        "204":
+          description: Appointment completed successfully
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
+
 components:
   parameters:
     Id:
